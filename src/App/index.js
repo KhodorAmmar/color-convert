@@ -38,7 +38,7 @@ const App = props => {
     }
 
     if (whichColor === "hex") {
-      hex = value;
+      hex = value === "" || value.indexOf("#") > -1 ? value : `#${value}`;
       if (color.isValid()) {
         rgb = color.toRgbString();
         hsl = color.toHslString();
