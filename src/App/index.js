@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
+import Footer from "../Footer";
 import tinycolor from "tinycolor2";
 
 import styles from "./App.module.css";
@@ -9,8 +10,7 @@ const App = props => {
     rgb: "",
     hex: ""
   });
-
-  const [value, setValue] = useState("");
+  const [picker, setPicker] = useState(false);
 
   const onChange = event => {
     if (!event) {
@@ -46,39 +46,53 @@ const App = props => {
     }
 
     setColors({ hsl, rgb, hex });
-    setValue(value);
   };
 
-  useEffect(() => {
-    document.body.style.setProperty("--color", value);
-  }, [value]);
+  useLayoutEffect(() => {
+    document.body.style.setProperty("--color", colors.hex);
+  }, [colors.hex]);
 
   return (
     <div className={styles.wrapper}>
-      <input
-        className={styles.input}
-        type="text"
-        name="hex"
-        value={colors.hex}
-        onChange={onChange}
-        placeholder="hex value or named color"
-      />
-      <input
-        className={styles.input}
-        type="text"
-        name="rgb"
-        value={colors.rgb}
-        onChange={onChange}
-        placeholder="rgb value"
-      />
-      <input
-        className={styles.input}
-        type="text"
-        name="hsl"
-        value={colors.hsl}
-        onChange={onChange}
-        placeholder="hsl value"
-      />
+      <div className={styles.row}>
+        <input
+          className={`${styles.input} ${styles.withButton}`}
+          type={picker ? "color" : "text"}
+          name="hex"
+          value={colors.hex}
+          onChange={onChange}
+          placeholder="hex value or named color"
+        />
+        <button
+          onClick={() => setPicker(p => !p)}
+          type="button"
+          aria-pressed={picker}
+          className={styles.button}
+        >
+          {picker ? "text input" : "color picker"}
+        </button>
+      </div>
+      <div className={styles.row}>
+        <input
+          className={styles.input}
+          type="text"
+          name="rgb"
+          value={colors.rgb}
+          onChange={onChange}
+          placeholder="rgb value"
+        />
+      </div>
+      <div className={styles.row}>
+        <input
+          className={styles.input}
+          type="text"
+          name="hsl"
+          value={colors.hsl}
+          onChange={onChange}
+          placeholder="hsl value"
+        />
+      </div>
+      <Footer bgColor={colors.hex} />
     </div>
   );
 };
