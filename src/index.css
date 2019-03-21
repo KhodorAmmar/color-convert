@@ -9,11 +9,6 @@ body {
   background-color: var(--color);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
 *,
 *:before,
 *:after {

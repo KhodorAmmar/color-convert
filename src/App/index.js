@@ -1,16 +1,27 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import Footer from "../Footer";
 import tinycolor from "tinycolor2";
 
 import styles from "./App.module.css";
 
 const App = props => {
+  const picker = useRef(null);
+  const [supportsColor, setSuppportsColor] = useState(true);
+  useLayoutEffect(() => {
+    // Checks if the browser support type:color
+    // Using useLayoutEffect to avoid the input flashing
+    if (picker.current !== null) {
+      if (picker.current.type !== "color") {
+        setSuppportsColor(false);
+      }
+    }
+  }, [picker.current]);
+
   const [colors, setColors] = useState({
     hsl: "",
     rgb: "",
     hex: ""
   });
-  const [picker, setPicker] = useState(false);
 
   const onChange = event => {
     if (!event) {
@@ -52,25 +63,42 @@ const App = props => {
     document.body.style.setProperty("--color", colors.hex);
   }, [colors.hex]);
 
+  const openPicker = event => {
+    picker.current.click();
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.row}>
         <input
           className={`${styles.input} ${styles.withButton}`}
-          type={picker ? "color" : "text"}
+          type={"text"}
           name="hex"
           value={colors.hex}
           onChange={onChange}
-          placeholder="hex value or named color"
+          placeholder="hex value"
         />
-        <button
-          onClick={() => setPicker(p => !p)}
-          type="button"
-          aria-pressed={picker}
-          className={styles.button}
-        >
-          {picker ? "text input" : "color picker"}
-        </button>
+
+        {supportsColor && (
+          <>
+            <input
+              className={styles.hidden}
+              ref={picker}
+              type={"color"}
+              name="hex"
+              value={colors.hex}
+              onChange={onChange}
+            />
+            <button
+              onClick={openPicker}
+              type="button"
+              className={styles.button}
+              aria-label="Click to open color picker"
+            >
+              {"color picker"}
+            </button>
+          </>
+        )}
       </div>
       <div className={styles.row}>
         <input
